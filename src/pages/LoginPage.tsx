@@ -1,6 +1,7 @@
-import User from "@/icons/User";
-import LockClosed from "@/icons/LockClosed";
 import React from "react";
+
+import LockClosed from "@/icons/LockClosed";
+import User from "@/icons/User";
 
 const LoginPage: React.FC = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -8,12 +9,12 @@ const LoginPage: React.FC = () => {
 
     const formData = new FormData(event.currentTarget);
 
-    console.group("login")
-    for(const [key, value] of formData.entries()) {
-      console.log(key, value)
+    console.group("login");
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
     }
-    console.groupEnd()
-  }
+    console.groupEnd();
+  };
 
   return (
     <div
