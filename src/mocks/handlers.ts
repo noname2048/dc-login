@@ -1,24 +1,25 @@
 import { rest } from "msw";
 
 export const handlers = [
-  rest.post("login", (_, res, ctx) => {
-    sessionStorage.setItem("is-authenticated", "true");
-    return res(ctx.status(200));
-  }),
-  rest.get("/user", (_, res, ctx) => {
-    const isAuthenticated = sessionStorage.getItem("is-authenticated");
-    if (!isAuthenticated) {
+  rest.post("/users/login", async (req, res, ctx) => {
+    const { username, password } = (await req.json()) as {
+      username: string;
+      password: string;
+    };
+    if (username.length >= 4 && username === password)
       return res(
-        ctx.status(403),
+        ctx.status(200),
         ctx.json({
-          errorMessage: "Not authorized",
+          token: username + "OK",
         }),
       );
-    }
+    return res(ctx.status(401), ctx.json({ errorMessage: "Invalid login" }));
+  }),
+  rest.get("/user", (req, res, ctx) => {
+    const authorization = req.headers.get("Authorization");
     return res(
-      ctx.status(200),
       ctx.json({
-        username: "admin",
+        authorization,
       }),
     );
   }),
