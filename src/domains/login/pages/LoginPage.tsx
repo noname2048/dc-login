@@ -1,17 +1,23 @@
+import axios from "axios";
 import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import LockClosed from "@/icons/LockClosed.tsx";
 import User from "@/icons/User.tsx";
 import { LoginStateAtom } from "@/recoil/LoginStateAtom.ts";
+import { TokenAtom, isLoginSelector } from "@/recoil/TokenAtom.ts";
 
 const LoginPage: React.FC = () => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const navigate = useNavigate();
   const [loginState, setLoginState] = useRecoilState(LoginStateAtom);
+  const setAccessToken = useSetRecoilState(TokenAtom);
+  const location = useLocation();
+  const redirectFrom = location?.state?.redirectedFrom?.pathname || "/my-page";
+
   if (loginState.isLogin) {
-    return <Navigate to="/page-a" />;
+    return <Navigate to={redirectFrom} />;
   }
 
   /** 가짜 로그인을 실행하는 함수 */
@@ -23,11 +29,11 @@ const LoginPage: React.FC = () => {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
 
-    if (username === "admin" && password === "admin") {
-      console.log("login success", loginState);
-      setLoginState((prev) => ({ ...prev, isLogin: true, name: "admin" }));
-      navigate("/page-a");
-    }
+    axios.post("/user/login", { username, password }).then((res) => {
+      console.log(res.data);
+      setAccessToken(res.data?.accessToken);
+      navigate(redirectFrom);
+    });
   };
 
   /** 폼 데이터를 콘솔에 출력하는 함수 */
