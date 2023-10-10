@@ -1,7 +1,7 @@
 import { rest } from "msw";
 
 export const handlers = [
-  rest.post("/users/login", async (req, res, ctx) => {
+  rest.post("/user/login", async (req, res, ctx) => {
     const { username, password } = (await req.json()) as {
       username: string;
       password: string;
@@ -10,7 +10,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json({
-          token: username + "OK",
+          accessToken: username + "OK",
         }),
       );
     return res(ctx.status(401), ctx.json({ errorMessage: "Invalid login" }));
