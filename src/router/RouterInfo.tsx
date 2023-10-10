@@ -1,18 +1,22 @@
+// Deprecated
 import { ReactNode } from "react";
+import { createBrowserRouter } from "react-router-dom";
 
+import Authorization from "@/domains/login/components/Authorization.tsx";
 import LoginPage from "@/domains/login/pages/LoginPage";
 import HomePage from "@/pages/HomePage.tsx";
 import PageA from "@/pages/PageA.tsx";
 import PageB from "@/pages/PageB.tsx";
+import MyPage from "@/pages/protected/MyPage.tsx";
 
-type RouterItem = {
+type RouteItem = {
   path: string;
   element: ReactNode;
   type: "public" | "login" | "private";
   label: string;
 };
 
-const RouterInfo: RouterItem[] = [
+const route: RouteItem[] = [
   {
     path: "/",
     element: <HomePage />,
@@ -37,7 +41,25 @@ const RouterInfo: RouterItem[] = [
     type: "private",
     label: "페이지 B",
   },
+  {
+    path: "my-page",
+    element: <MyPage />,
+    type: "private",
+    label: "마이 페이지",
+  },
 ];
 
+const RouterInfo = createBrowserRouter(
+  route.map((item) => {
+    if (item.type === "private") {
+      return {
+        path: item.path,
+        element: <Authorization>{item.element}</Authorization>,
+      };
+    }
+    return { path: item.path, element: <>{item.element}</> };
+  }),
+);
+
 export default RouterInfo;
-export type { RouterItem };
+export type { RouteItem };
