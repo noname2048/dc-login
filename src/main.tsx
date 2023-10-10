@@ -4,9 +4,14 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 
 import Authorization from "@/domains/login/components/Authorization.tsx";
+import { worker } from "@/mocks/browser";
 import RouterInfo from "@/router/RouterInfo.tsx";
 
 import "./global.css";
+
+if (process.env.NODE_ENV === "development") {
+  worker.start();
+}
 
 const router = createBrowserRouter(
   RouterInfo.map((routerInfo) => {
